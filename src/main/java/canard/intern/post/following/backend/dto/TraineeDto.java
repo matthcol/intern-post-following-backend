@@ -1,6 +1,8 @@
 package canard.intern.post.following.backend.dto;
 
 import canard.intern.post.following.backend.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -10,6 +12,7 @@ import javax.validation.Constraint;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Builder
 @Data
 public class TraineeDto {
