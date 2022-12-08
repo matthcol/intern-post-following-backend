@@ -324,7 +324,7 @@ class TraineeControllerTest {
         mockMvc.perform(delete(URL_TEMPLATE_ID, id))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        fail("missing some test here ....")
+        fail("missing some test here ....");
     }
 
     @Test
