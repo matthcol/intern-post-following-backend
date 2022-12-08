@@ -329,8 +329,11 @@ class TraineeControllerTest {
 
     @Test
     void delete_KO() {
+        fail("Test not defined yet");
+        int id = 12345;
+        given(traineeService.delete(id))
+                .willReturn(null);
         // id not found
         // id found but can't be deleted
-        fail("Test not defined yet");
     }
 }
