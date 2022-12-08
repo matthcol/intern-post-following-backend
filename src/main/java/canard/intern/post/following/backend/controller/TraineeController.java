@@ -2,6 +2,8 @@ package canard.intern.post.following.backend.controller;
 
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.enums.Gender;
+import canard.intern.post.following.backend.service.TraineeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -11,10 +13,14 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/trainees")
 public class TraineeController {
+
+    @Autowired
+    private TraineeService traineeService;
 
     /**
      * GET /api/trainees
@@ -22,33 +28,7 @@ public class TraineeController {
      */
     @GetMapping
     public List<TraineeDto> getAll(){
-       return List.of(
-               TraineeDto.builder()
-                       .id(1)
-                       .lastname("Bond")
-                       .firstname("James")
-                       .gender(Gender.M)
-                       .birthdate(LocalDate.of(1945, 6, 16))
-                       .build(),
-               TraineeDto.builder()
-                       .id(2)
-                       .lastname("Aubert")
-                       .firstname("Jean-Luc")
-                       .build(),
-               TraineeDto.builder()
-                       .id(3)
-                       .lastname("Neymar")
-                       .firstname("Jean")
-                       .gender(Gender.X)
-                       .birthdate(LocalDate.of(1999,1,14))
-                       .build(),
-               TraineeDto.builder()
-                       .id(3)
-                       .lastname("Moneypenny")
-                       .firstname("Miss")
-                       .gender(Gender.F)
-                       .build()
-       );
+       return traineeService.getAll();
     }
 
     /**
@@ -62,12 +42,12 @@ public class TraineeController {
      */
     @GetMapping("/{id}")
     public TraineeDto getById(@PathVariable("id") int id){
-        return TraineeDto.builder()
-                .id(id) // mirror
-                .lastname("Moneypenny")
-                .firstname("Miss")
-                .gender(Gender.F)
-                .build();
+        var optTraineeDto =  traineeService.getById(id);
+        if (optTraineeDto.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("No trainee found with id <%d>", id));
+        }
+        return optTraineeDto.get();
     }
 
     @PostMapping
@@ -88,6 +68,7 @@ public class TraineeController {
                             id, traineeDto.getId()));
             // NB:you can use also:  MessageFormat.format or StringBuilder
         }
+        traineeDto.setId(id);
         return traineeDto;
     }
 
