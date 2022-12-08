@@ -141,6 +141,16 @@ class TraineeControllerTest {
     @Test
     void getById_KO_xmlNotAcceptable() throws Exception {
         int id = 2;
+        var traineeDto = TraineeDto.builder()
+                .id(id)
+                .lastname("Bond")
+                .firstname("James")
+                .birthdate(LocalDate.of(1950,6, 12))
+                .email("james.bond@007.org")
+                .build();
+        given(traineeService.getById(id))
+                .willReturn(Optional.of(traineeDto));
+
         mockMvc.perform(get(URL_TEMPLATE_ID, id)
                         .accept(MediaType.APPLICATION_XML)
                 )
