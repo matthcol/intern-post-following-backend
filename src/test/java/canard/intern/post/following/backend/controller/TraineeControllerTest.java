@@ -332,23 +332,39 @@ class TraineeControllerTest {
                 .update(eq(id), any());
     }
 
+    // TODO: void update_KO_updateException
+
     @Test
     void delete_OK() throws Exception {
-        //  id found and delete successfull
         int id = 12345;
+
+        given(traineeService.delete(id))
+                .willReturn(true);
+
         mockMvc.perform(delete(URL_TEMPLATE_ID, id))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        fail("missing some test here ....");
+
+        then(traineeService)
+                .should()
+                .delete(id);
     }
 
     @Test
-    void delete_KO() {
-        fail("Test not defined yet");
+    void delete_KO() throws Exception {
         int id = 12345;
+
         given(traineeService.delete(id))
-                .willReturn(null);
-        // id not found
-        // id found but can't be deleted
+                .willReturn(false);
+
+        mockMvc.perform(delete(URL_TEMPLATE_ID, id))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        then(traineeService)
+                .should()
+                .delete(id);
     }
+
+    // TODO: delete: id found but can't be deleted
 }
