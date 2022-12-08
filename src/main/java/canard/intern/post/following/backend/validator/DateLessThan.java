@@ -1,4 +1,4 @@
-package validator;
+package canard.intern.post.following.backend.validator;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -6,6 +6,7 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -25,6 +26,11 @@ class DateLessThanValidator implements ConstraintValidator<DateLessThan, LocalDa
 
     @Override
     public boolean isValid(LocalDate localDate, ConstraintValidatorContext constraintValidatorContext) {
+        // constraint transparent if localDate is null
+        if (Objects.isNull(localDate)) {
+            return true;
+        }
+        // localDate is not null: check custom constraint
         LocalDate today = LocalDate.now();
         LocalDate date18yearsAgo = today.minusYears(18L);
         // localDate <= .date18yearsAgo
