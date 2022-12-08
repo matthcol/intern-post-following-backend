@@ -22,6 +22,7 @@ import org.springframework.web.util.NestedServletException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,6 +85,90 @@ class TraineeControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(traineesDtoResponse.size())));
+    }
+
+    @Test
+    void getByLastname_OK_FoundSeveral() throws Exception {
+        String lastnamePartialArg = "Bond";
+
+        var traineesDtoResponse = Set.of(
+                TraineeDto.builder()
+                        .id(1)
+                        .lastname("Bond")
+                        .firstname("James")
+                        .gender(Gender.M)
+                        .birthdate(LocalDate.of(1945, 6, 16))
+                        .email("james.bond@007.org")
+                        .build(),
+                TraineeDto.builder()
+                        .id(2)
+                        .lastname("Bond")
+                        .firstname("Jane")
+                        .gender(Gender.F)
+                        .birthdate(LocalDate.of(1944, 7, 15))
+                        .email("jane.bond@007.org")
+                        .build(),
+                TraineeDto.builder()
+                        .id(3)
+                        .lastname("Notbond")
+                        .firstname("Jean")
+                        .gender(Gender.X)
+                        .birthdate(LocalDate.of(1999,1,14))
+                        .email("jean.notbond@007.org")
+                        .build(),
+                TraineeDto.builder()
+                        .id(4)
+                        .lastname("Bonding")
+                        .firstname("Jane")
+                        .gender(Gender.F)
+                        .birthdate(LocalDate.of(1969,1,14))
+                        .email("jean.bonding@007.org")
+                        .build(),
+                TraineeDto.builder()
+                        .id(4)
+                        .lastname("Notbonding")
+                        .firstname("Jane")
+                        .gender(Gender.F)
+                        .birthdate(LocalDate.of(1969,1,14))
+                        .email("jane.notbonding@007.org")
+                        .build());
+        given(traineeService.getByLastnameContaining(eq(lastnamePartialArg)))
+                .willReturn(traineesDtoResponse);
+
+        mockMvc.perform(get(BASE_URL + "/search/byLastname")
+                        .queryParam("ln", lastnamePartialArg)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(traineesDtoResponse.size())))
+                .andExpect(
+                        jsonPath("$[*].lastname",
+                                Matchers.everyItem(
+                                        Matchers.containsStringIgnoringCase(lastnamePartialArg)
+                                )
+                        ));
+    }
+
+    @Test
+    void getByLastname_OK_FoundNone() throws Exception {
+        String lastnamePartialArg = "Bond";
+
+        Set<TraineeDto> traineesDtoResponse = Set.of();
+        given(traineeService.getByLastnameContaining(eq(lastnamePartialArg)))
+                .willReturn(traineesDtoResponse);
+
+        mockMvc.perform(get(BASE_URL + "/search/byLastname")
+                        .queryParam("ln", lastnamePartialArg)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test

@@ -2,8 +2,10 @@ package canard.intern.post.following.backend.service;
 
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.error.UpdateException;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface TraineeService {
     /**
@@ -19,6 +21,14 @@ public interface TraineeService {
      * or optional empty if not exists
      */
     Optional<TraineeDto> getById(int id);
+
+    /**
+     * get trainees with lastname containing lastnamePartial,
+     * ignoring case
+     * @param lastnamePartial
+     * @return set of trainees matching
+     */
+    Set<TraineeDto> getByLastnameContaining(String lastnamePartial);
 
     /**
      * create trainee and generate an id
