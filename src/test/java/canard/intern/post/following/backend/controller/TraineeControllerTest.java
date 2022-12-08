@@ -5,6 +5,7 @@ import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.enums.Gender;
 import canard.intern.post.following.backend.error.UpdateException;
 import canard.intern.post.following.backend.service.TraineeService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,8 +20,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.util.NestedServletException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,8 +46,44 @@ class TraineeControllerTest {
     TraineeService traineeService;
 
     @Test
-    void getAll() {
-        fail("Test not defined yet");
+    void getAll() throws Exception {
+        var traineesDtoResponse = List.of(
+                TraineeDto.builder()
+                        .id(1)
+                        .lastname("Bond")
+                        .firstname("James")
+                        .gender(Gender.M)
+                        .birthdate(LocalDate.of(1945, 6, 16))
+                        .build(),
+                TraineeDto.builder()
+                        .id(2)
+                        .lastname("Aubert")
+                        .firstname("Jean-Luc")
+                        .build(),
+                TraineeDto.builder()
+                        .id(3)
+                        .lastname("Neymar")
+                        .firstname("Jean")
+                        .gender(Gender.X)
+                        .birthdate(LocalDate.of(1999,1,14))
+                        .build(),
+                TraineeDto.builder()
+                        .id(3)
+                        .lastname("Moneypenny")
+                        .firstname("Miss")
+                        .gender(Gender.F)
+                        .build());
+        given(traineeService.getAll())
+                .willReturn(traineesDtoResponse);
+
+        mockMvc.perform(get(BASE_URL)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(traineesDtoResponse.size())));
     }
 
     @Test
