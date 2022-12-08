@@ -309,12 +309,27 @@ class TraineeControllerTest {
     }
 
     @Test
-    void update_KO_idNotFound() {
-        // prepare
+    void update_KO_idNotFound() throws Exception {
+        // prepare data
+        int id = 12345;
 
-        // - id not found
-        //      +. all fields valid
-        fail("Test not defined yet");
+        String traineeJsonRequest = TraineeJsonProvider.traineeJsonValidWithId12345();
+
+        given(traineeService.update(eq(id), any()))
+                .willReturn(Optional.empty());
+
+        // call controller
+        mockMvc.perform(put(URL_TEMPLATE_ID, id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(traineeJsonRequest)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+        then(traineeService)
+                .should()
+                .update(eq(id), any());
     }
 
     @Test
