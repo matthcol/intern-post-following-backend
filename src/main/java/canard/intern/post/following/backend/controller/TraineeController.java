@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/trainees")
@@ -45,15 +46,20 @@ public class TraineeController {
         var optTraineeDto =  traineeService.getById(id);
         if (optTraineeDto.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    String.format("No trainee found with id <%d>", id));
+                    String.format("Trainee not found with id <%d>", id));
         }
         return optTraineeDto.get();
+    }
+
+    @GetMapping("search/byLastname")
+    public Set<TraineeDto> getByLastname(@RequestParam("ln") String lastnamePartial){
+        return traineeService.getByLastnameContaining(lastnamePartial);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TraineeDto create(@Valid @RequestBody TraineeDto traineeDto) {
-        return null;
+        return traineeService.create(traineeDto);
     }
 
     @PutMapping("/{id}")
@@ -67,14 +73,20 @@ public class TraineeController {
                             id, traineeDto.getId()));
             // NB:you can use also:  MessageFormat.format or StringBuilder
         }
-        traineeDto.setId(id);
-        return traineeDto;
+        return traineeService.update(id, traineeDto)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Trainee not found with id <%d>",
+                                id)));
     }
 
     //NB: other choice, return Dto removed if found
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") int id){
-        // TODO: remove Trainee with this id
+        if(!traineeService.delete(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format("Trainee not found with id <%d>",
+                            id));
+        }
     }
 }
