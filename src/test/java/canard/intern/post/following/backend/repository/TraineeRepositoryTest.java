@@ -65,6 +65,11 @@ class TraineeRepositoryTest {
         // (optional) verify 2: read data from db to check if data has been inserted
     }
 
+    // TODO: test delete
+
+    // TODO: test update
+
+
     @Test
     void findAll() {
         // given: save data in database
@@ -142,5 +147,6 @@ class TraineeRepositoryTest {
         assertTrue(optTrainee.isEmpty(), "trainee is absent");
     }
 
+    // TODO: find by lastname (partial, ignoring case)
 
 }
