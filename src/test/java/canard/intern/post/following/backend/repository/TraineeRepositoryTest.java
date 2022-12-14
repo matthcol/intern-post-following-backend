@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class TraineeRepositoryTest {
 
-    // component to test
+    // component under test
     @Autowired
     TraineeRepository traineeRepository;
 
