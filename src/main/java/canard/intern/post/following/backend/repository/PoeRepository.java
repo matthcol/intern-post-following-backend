@@ -33,14 +33,8 @@ public interface PoeRepository extends JpaRepository<Poe, Integer> {
             " FROM Poe p GROUP BY p.poeType")
     List<IPoeTypeCountPoeDto> countPoeByPoeType2();
 
-//    SELECT
-//    p.*,
-//    count(t.id) as trainee_count
-//    From poes p
-//    LEFT OUTER JOIN trainees t ON  t.poe_id= p.id
-//    GROUP BY p.id
-//    order by trainee_count;
-
+    // NB: RIGHT JOIN here because association is unidirectional
+    // in the Java Model: Trainee => Poe
     @Query("SELECT p.id as id, p.title as title, " +
             "   p.beginDate as beginDate, p.poeType as poeType, " +
             "   COUNT(t.id) as traineeCount " +
@@ -48,7 +42,5 @@ public interface PoeRepository extends JpaRepository<Poe, Integer> {
             "GROUP BY p " +
             "ORDER BY traineeCount")
     List<Tuple> countTraineesByPoe();
-
-
 
 }
