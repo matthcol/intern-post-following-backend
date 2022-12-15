@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -27,8 +28,8 @@ public class JpaRepositoryQueries {
     PoeRepository poeRepository;
 
     private static void displayCollection(Collection<?> collection) {
-        for (var t: collection) {
-            System.out.println("\t- " + t);
+        for (var e: collection) {
+            System.out.println("\t- " + e);
         }
     }
 
@@ -42,7 +43,7 @@ public class JpaRepositoryQueries {
     @Test
     void poesByTitleIgnoreCase() {
         String title = "java fullstack";
-        var poes = poeRepository.findByTitleIgnoreCase(title);
+        var poes = poeRepository.findByTitleIgnoreCaseOrderByBeginDate(title);
         displayCollection(poes);
     }
 
@@ -64,11 +65,64 @@ public class JpaRepositoryQueries {
         displayCollection(poes);
     }
 
+
+
+    @Test
+    void poesStartingYear_JpqlQuery(){
+        int year = 2022;
+        var poes = poeRepository.findByBeginDateInYear(year);
+        displayCollection(poes);
+    }
+
     @Test
     void traineesByPoeTitleIgnoreCase() {
         String title = "java fullstack";
         var trainees = traineeRepository.findByPoeTitleIgnoreCase(title);
         displayCollection(trainees);
+    }
+
+    // Sort
+
+    @Test
+    void poesSorted() {
+        var poesSortedByDateDesc = poeRepository.findAll(
+                Sort.by("beginDate").descending()
+        );
+        displayCollection(poesSortedByDateDesc);
+        var poesSortedByTitleDate = poeRepository.findAll(
+//                Sort.by("title")
+//                        .and(Sort.by("beginDate"))
+                Sort.by("title", "beginDate")
+        );
+        displayCollection(poesSortedByTitleDate);
+    }
+
+    @Test
+    void poesStartingYearSorted(){
+        int year = 2022;
+        var poes = poeRepository.findByBeginDateBetween(
+                LocalDate.of(year, 1, 1),
+                LocalDate.of(year, 12, 31),
+                Sort.by("beginDate")
+        );
+        displayCollection(poes);
+    }
+
+    // stats
+
+    @Test
+    void countPoeByPoeType() {
+        var stats = poeRepository.countPoeByPoeType();
+        displayCollection(stats);
+    }
+
+    @Test
+    void countPoeByPoeType2() {
+        var stats = poeRepository.countPoeByPoeType2();
+        for (var statRow: stats) {
+            System.out.println("\t- " + statRow.getPoeType()
+                    + ": " + statRow.getCountPoe());
+        }
     }
 
 }
