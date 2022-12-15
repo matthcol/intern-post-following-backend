@@ -52,4 +52,83 @@ public class ModelMapperTraineeTest {
         );
     }
 
+    @Test
+    void mapTraineeDtoToEntity(){
+        int id = 12345;
+        String lastname = "Bond";
+        String firstname = "James";
+        Gender gender = Gender.M;
+        LocalDate birthdate = LocalDate.of(1950,1,6);
+        String email = "james.bond@im6.org";
+        String phoneNumber = "+33700700700";
+        var traineeDto = TraineeDto.builder()
+                .id(id)
+                .lastname(lastname)
+                .firstname(firstname)
+                .gender(gender)
+                .birthdate(birthdate)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .build();
+        var traineeEntity = modelMapper.map(traineeDto, Trainee.class);
+        assertNotNull(traineeEntity);
+        assertSame(Trainee.class, traineeEntity.getClass());
+        assertAll(
+                () -> assertEquals(id, traineeEntity.getId(), "trainee entity id"),
+                () -> assertEquals(lastname, traineeEntity.getLastname(), "trainee entity lastname"),
+                () -> assertEquals(firstname, traineeEntity.getFirstname(), "trainee entity firstname"),
+                () -> assertEquals(birthdate, traineeEntity.getBirthdate(), "trainee entity birthdate"),
+                () -> assertEquals(gender, traineeEntity.getGender(), "trainee entity gender"),
+                () -> assertEquals(email, traineeEntity.getEmail(), "trainee entity email"),
+                () -> assertEquals(phoneNumber, traineeEntity.getPhoneNumber(), "trainee entity phone number")
+        );
+    }
+
+    @Test
+    void mapTraineeDtoIntoEntity(){
+        // given
+        int id = 12345;
+        String lastname = "Bond";
+        String firstname = "James";
+        Gender gender = Gender.M;
+        LocalDate birthdate = LocalDate.of(1950,1,6);
+        String email = "james.bond@im6.org";
+        String phoneNumber = "+33700700700";
+        // dto with new values
+        var traineeDto = TraineeDto.builder()
+                .id(id)
+                .lastname(lastname)
+                .firstname(firstname)
+                .gender(gender)
+                .birthdate(birthdate)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .build();
+        // entity with oldvalues
+        var traineeEntity = Trainee.builder()
+                .id(id)
+                .lastname("X")
+                .firstname("Y")
+                .gender(null)
+                .birthdate(LocalDate.MIN)
+                .email("nnoemail@noemail.org")
+                .phoneNumber(null)
+                .build();
+
+        // when transfer dto properties into entity object
+        modelMapper.map(traineeDto, traineeEntity);
+
+        // then, verify
+        assertNotNull(traineeEntity);
+        assertSame(Trainee.class, traineeEntity.getClass());
+        assertAll(
+                () -> assertEquals(id, traineeEntity.getId(), "trainee entity id"),
+                () -> assertEquals(lastname, traineeEntity.getLastname(), "trainee entity lastname"),
+                () -> assertEquals(firstname, traineeEntity.getFirstname(), "trainee entity firstname"),
+                () -> assertEquals(birthdate, traineeEntity.getBirthdate(), "trainee entity birthdate"),
+                () -> assertEquals(gender, traineeEntity.getGender(), "trainee entity gender"),
+                () -> assertEquals(email, traineeEntity.getEmail(), "trainee entity email"),
+                () -> assertEquals(phoneNumber, traineeEntity.getPhoneNumber(), "trainee entity phone number")
+        );
+    }
 }

@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 import java.time.LocalDate;
 
-@ToString
+@ToString(exclude = "poe")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,4 +37,10 @@ public class Trainee {
 
     @Column(nullable = false, length = 100, unique = true)
     private String email;
+
+    // @Transient // do not persist this attribute
+    @ManyToOne
+        //(fetch = FetchType.LAZY)  // on demand (default Eager i.e. always)
+    // @JoinColumn(name = "id_poe") // customize Foreign Key column
+    private Poe poe;
 }

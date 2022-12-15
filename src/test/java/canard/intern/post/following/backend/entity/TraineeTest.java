@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 // use H2 Database (in memory) by default
 @DataJpaTest
+@ActiveProfiles("testu")
 class TraineeTest {
 
     // ORM Hibernate
