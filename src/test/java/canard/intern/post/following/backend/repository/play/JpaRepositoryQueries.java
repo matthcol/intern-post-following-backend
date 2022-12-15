@@ -125,4 +125,13 @@ public class JpaRepositoryQueries {
         }
     }
 
+    @Test
+    void countTraineeByPoe() {
+        var stats = poeRepository.countTraineesByPoe();
+        for (var rowStat: stats) {
+            System.out.println("\t- "
+                    + rowStat.get("title", String.class)
+                    + " : " + rowStat.get("traineeCount", Long.class));
+        }
+    }
 }
