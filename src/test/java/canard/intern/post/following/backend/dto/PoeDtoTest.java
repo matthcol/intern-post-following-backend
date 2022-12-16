@@ -30,4 +30,17 @@ class PoeDtoTest {
                 LocalDate.of(2022,12,1),
                 PoeType.POEI);
     }
+
+
+    @Test
+    void builder(){
+        var poeDto = PoeDto.builder()
+                .id(1)
+                .title("Java Fullstack")
+                .build();
+        System.out.println(poeDto);
+        assertSame(PoeDto.class, poeDto.getClass());
+        // TODO: assert all has been set
+
+    }
 }

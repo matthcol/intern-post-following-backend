@@ -2,11 +2,12 @@ package canard.intern.post.following.backend.dto;
 
 import canard.intern.post.following.backend.enums.PoeType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-
-@Builder
+@ToString
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
