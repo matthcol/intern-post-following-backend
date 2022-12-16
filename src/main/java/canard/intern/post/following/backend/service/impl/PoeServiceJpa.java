@@ -1,9 +1,12 @@
 package canard.intern.post.following.backend.service.impl;
 
+import canard.intern.post.following.backend.dto.PoeDetailDto;
 import canard.intern.post.following.backend.dto.PoeDto;
+import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.entity.Poe;
 import canard.intern.post.following.backend.error.UpdateException;
 import canard.intern.post.following.backend.repository.PoeRepository;
+import canard.intern.post.following.backend.repository.TraineeRepository;
 import canard.intern.post.following.backend.service.PoeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class PoeServiceJpa implements PoeService {
     private PoeRepository poeRepository;
 
     @Autowired
+    private TraineeRepository traineeRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Override
@@ -31,9 +37,18 @@ public class PoeServiceJpa implements PoeService {
     }
 
     @Override
-    public Optional<PoeDto> getById(int id) {
+    public Optional<PoeDetailDto> getById(int id) {
         return poeRepository.findById(id)
-                .map(te -> modelMapper.map(te, PoeDto.class));
+                .map(poeEntity -> {
+                    // list of trainees from this poe
+                    var trainees = traineeRepository.findByPoeId(id)
+                            .stream()
+                            .map(traineeEntity -> modelMapper.map(traineeEntity, TraineeDto.class))
+                            .toList();
+                    var poeDetailDto =  modelMapper.map(poeEntity, PoeDetailDto.class);
+                    poeDetailDto.setTrainees(trainees);
+                    return poeDetailDto;
+                });
     }
 
     @Override
