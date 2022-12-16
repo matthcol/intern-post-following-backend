@@ -70,7 +70,7 @@ public class TraineeServiceJpa implements TraineeService {
                         return modelMapper.map(te, TraineeDto.class);
                     });
         } catch (DataIntegrityViolationException ex) {
-            throw new UpdateException("Trainee cannot be saved", ex);
+            throw new UpdateException("Trainee cannot be updated", ex);
         }
     }
 
@@ -86,7 +86,7 @@ public class TraineeServiceJpa implements TraineeService {
                     })
                     .orElse(false);
         } catch (DataIntegrityViolationException ex) {
-            throw new UpdateException("Trainee cannot be saved", ex);
+            throw new UpdateException("Trainee cannot be deleted", ex);
         }
     }
 }

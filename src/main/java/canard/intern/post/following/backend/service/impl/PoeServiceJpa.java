@@ -26,7 +26,7 @@ public class PoeServiceJpa implements PoeService {
     public List<PoeDto> getAll() {
         return poeRepository.findAll()
                 .stream()
-                .map(te -> modelMapper.map(te, PoeDto.class))
+                .map(pe -> modelMapper.map(pe, PoeDto.class))
                 .toList();
     }
 
@@ -65,17 +65,17 @@ public class PoeServiceJpa implements PoeService {
         poeDto.setId(id);
         try {
             return poeRepository.findById(id)
-                    .map(te -> {
+                    .map(pe -> {
                         // update in DB if found
                         // 1 - overwrite entity fields with dto fields
-                        modelMapper.map(poeDto, te);
+                        modelMapper.map(poeDto, pe);
                         // 2 - synchronize with DB
                         poeRepository.flush(); // force SQL UPDATE here
                         // 3 - transform back modified entity in  DTO
-                        return modelMapper.map(te, PoeDto.class);
+                        return modelMapper.map(pe, PoeDto.class);
                     });
         } catch (DataIntegrityViolationException ex) {
-            throw new UpdateException("Trainee cannot be saved", ex);
+            throw new UpdateException("Poe cannot be updated", ex);
         }
     }
 
@@ -83,15 +83,15 @@ public class PoeServiceJpa implements PoeService {
     public boolean delete(int id) {
         try {
             return poeRepository.findById(id)
-                    .map(te -> {
+                    .map(pe -> {
                         // delete in DB if found
-                        poeRepository.delete(te);
+                        poeRepository.delete(pe);
                         poeRepository.flush(); // force SQL delete here
                         return true;
                     })
                     .orElse(false);
         } catch (DataIntegrityViolationException ex) {
-            throw new UpdateException("Trainee cannot be saved", ex);
+            throw new UpdateException("Poe cannot be deleted", ex);
         }
     }
 }
