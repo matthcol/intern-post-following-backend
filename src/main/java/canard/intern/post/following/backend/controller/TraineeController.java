@@ -76,6 +76,19 @@ public class TraineeController {
                                 id)));
     }
 
+    @PatchMapping("/{idTrainee}/setPoe/{idPoe}")
+    public TraineeDetailDto setPoe(
+            @PathVariable("idTrainee") int idTrainee,
+            @PathVariable("idPoe") int idPoe)
+    {
+        return traineeService.setPoe(idTrainee, idPoe)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Trainee not found with id <%d> or poe not found with id <%d>",
+                                idTrainee, idPoe)));
+    }
+
+    // TODO: setNullPoe with a PATCH
+
     //NB: other choice, return Dto removed if found
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

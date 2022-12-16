@@ -58,4 +58,12 @@ public interface TraineeService {
      */
     boolean delete(int id);
 
+    /**
+     *
+     * @param idTrainee
+     * @param idPoe
+     * @return option trainee with details if trainee and poe exist
+     * else optional empty
+     */
+    Optional<TraineeDetailDto> setPoe(int idTrainee, int idPoe);
 }

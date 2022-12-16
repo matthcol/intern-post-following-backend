@@ -4,6 +4,7 @@ import canard.intern.post.following.backend.dto.TraineeDetailDto;
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.entity.Trainee;
 import canard.intern.post.following.backend.error.UpdateException;
+import canard.intern.post.following.backend.repository.PoeRepository;
 import canard.intern.post.following.backend.repository.TraineeRepository;
 import canard.intern.post.following.backend.service.TraineeService;
 import org.modelmapper.ModelMapper;
@@ -20,6 +21,9 @@ public class TraineeServiceJpa implements TraineeService {
 
     @Autowired
     private TraineeRepository traineeRepository;
+
+    @Autowired
+    private PoeRepository poeRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -89,5 +93,17 @@ public class TraineeServiceJpa implements TraineeService {
         } catch (DataIntegrityViolationException ex) {
             throw new UpdateException("Trainee cannot be deleted", ex);
         }
+    }
+
+    @Override
+    public Optional<TraineeDetailDto> setPoe(int idTrainee, int idPoe) {
+        return  traineeRepository.findById(idTrainee)
+                .flatMap(traineeEntity -> poeRepository.findById(idPoe)
+                        .map(poeEntity -> {
+                            traineeEntity.setPoe(poeEntity);
+                            traineeRepository.flush(); // force UPDATE here
+                            return modelMapper.map(traineeEntity, TraineeDetailDto.class);
+                        })
+                );
     }
 }
