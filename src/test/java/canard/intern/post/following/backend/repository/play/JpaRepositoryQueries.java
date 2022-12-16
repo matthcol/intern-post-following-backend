@@ -131,7 +131,9 @@ public class JpaRepositoryQueries {
         for (var rowStat: stats) {
             System.out.println("\t- "
                     + rowStat.get("title", String.class)
-                    + " : " + rowStat.get("traineeCount", Long.class));
+                    + ", " + rowStat.get("poeType", PoeType.class)
+                    + ", " + rowStat.get("beginDate", LocalDate.class)
+                    + " => " + rowStat.get("traineeCount", Long.class));
         }
     }
 }

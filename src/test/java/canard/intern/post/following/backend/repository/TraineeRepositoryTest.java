@@ -196,7 +196,7 @@ class TraineeRepositoryTest {
         traineeToModified.setBirthdate(newBirthdate);
         traineeToModified.setEmail(newEmail);
         traineeToModified.setPhoneNumber(newPhoneNumber);
-        traineeRepository.flush();
+        traineeRepository.flush(); // force UPDATE
 
         // then verify trainee has been updated in DB
         entityManager.clear();
@@ -294,7 +294,7 @@ class TraineeRepositoryTest {
 
     @Test
     void findById_present() {
-        // given:
+        // given
         var traineeDatabase = Trainee.builder()
                 .lastname("Bond")
                 .firstname("Jane")
@@ -304,7 +304,7 @@ class TraineeRepositoryTest {
                 .phoneNumber("+33700700701")
                 .build();
         int id = entityManager.persistAndGetId(traineeDatabase, Integer.class);
-        entityManager.flush();
+        entityManager.flush(); // force synchro INSERT
         entityManager.clear(); // empty hibernate cache
 
         // when
