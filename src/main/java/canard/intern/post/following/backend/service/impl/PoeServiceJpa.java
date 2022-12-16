@@ -1,9 +1,7 @@
 package canard.intern.post.following.backend.service.impl;
 
 import canard.intern.post.following.backend.dto.PoeDto;
-import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.entity.Poe;
-import canard.intern.post.following.backend.entity.Trainee;
 import canard.intern.post.following.backend.error.UpdateException;
 import canard.intern.post.following.backend.repository.PoeRepository;
 import canard.intern.post.following.backend.service.PoeService;
@@ -16,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PoeServiceImpl implements PoeService {
+public class PoeServiceJpa implements PoeService {
 
     @Autowired
     private PoeRepository poeRepository;
