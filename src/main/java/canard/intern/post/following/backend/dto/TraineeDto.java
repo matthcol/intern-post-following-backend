@@ -2,20 +2,18 @@ package canard.intern.post.following.backend.dto;
 
 import canard.intern.post.following.backend.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import canard.intern.post.following.backend.validator.DateLessThan;
-import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter @Setter
 public class TraineeDto {
     private Integer id;
 

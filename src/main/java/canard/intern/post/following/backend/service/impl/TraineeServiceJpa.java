@@ -1,5 +1,6 @@
 package canard.intern.post.following.backend.service.impl;
 
+import canard.intern.post.following.backend.dto.TraineeDetailDto;
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.entity.Trainee;
 import canard.intern.post.following.backend.error.UpdateException;
@@ -32,9 +33,9 @@ public class TraineeServiceJpa implements TraineeService {
     }
 
     @Override
-    public Optional<TraineeDto> getById(int id) {
+    public Optional<TraineeDetailDto> getById(int id) {
         return traineeRepository.findById(id)
-                .map(te -> modelMapper.map(te, TraineeDto.class));
+                .map(te -> modelMapper.map(te, TraineeDetailDto.class));
     }
 
     @Override

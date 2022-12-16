@@ -1,8 +1,11 @@
 package canard.intern.post.following.backend.controller;
 
 import canard.intern.post.following.backend.controller.fixture.TraineeJsonProvider;
+import canard.intern.post.following.backend.dto.PoeDto;
+import canard.intern.post.following.backend.dto.TraineeDetailDto;
 import canard.intern.post.following.backend.dto.TraineeDto;
 import canard.intern.post.following.backend.enums.Gender;
+import canard.intern.post.following.backend.enums.PoeType;
 import canard.intern.post.following.backend.error.UpdateException;
 import canard.intern.post.following.backend.service.TraineeService;
 import org.hamcrest.Matchers;
@@ -172,11 +175,11 @@ class TraineeControllerTest {
     }
 
     @Test
-    void getById_OK_idFound() throws Exception {
+    void getById_OK_idFound_withoutPoe() throws Exception {
         int id = 2;
 
         // prepare mock response of trainee service
-        var traineeDto = TraineeDto.builder()
+        var traineeDto = TraineeDetailDto.builder()
                 .id(id)
                 .lastname("Bond")
                 .firstname("James")
@@ -203,6 +206,47 @@ class TraineeControllerTest {
     }
 
     @Test
+    void getById_OK_idFound_withPoe() throws Exception {
+        int idTrainee = 2;
+        int idPoe = 44;
+
+        // prepare mock response of trainee service
+        var traineeDto = TraineeDetailDto.builder()
+                .id(idTrainee)
+                .lastname("Bond")
+                .firstname("James")
+                .birthdate(LocalDate.of(1950,6, 12))
+                .email("james.bond@007.org")
+                .poe(PoeDto.builder()
+                        .id(idPoe)
+                        .title("Java Fullstack")
+                        .beginDate(LocalDate.of(2022,11,1))
+                        .endDate(LocalDate.of(2023,2,1))
+                        .poeType(PoeType.POEC)
+                        .build()
+                )
+                .build();
+        given(traineeService.getById(idTrainee))
+                .willReturn(Optional.of(traineeDto));
+
+        // call controller with mock http client
+        mockMvc.perform(get(URL_TEMPLATE_ID,  idTrainee)
+                        .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                //.andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(idTrainee))
+                .andExpect(jsonPath("$.poe.id").value(idPoe));
+
+        // verify mock service has been called by controller
+        then(traineeService)
+                .should()
+                .getById(idTrainee);
+    }
+
+    @Test
     void getById_KO_idNotFound() throws Exception {
         int id = 2;
 
@@ -226,7 +270,7 @@ class TraineeControllerTest {
     @Test
     void getById_KO_xmlNotAcceptable() throws Exception {
         int id = 2;
-        var traineeDto = TraineeDto.builder()
+        var traineeDto = TraineeDetailDto.builder()
                 .id(id)
                 .lastname("Bond")
                 .firstname("James")
