@@ -78,7 +78,7 @@ class PoeRepositoryTest {
             "begin date null,Java Fullstack,,2023-01-27,POEI",
             "end date null,Java Fullstack,2022-10-24,,POEI",
             "poe type null,Java Fullstack,2022-10-24,2023-01-27,",
-            "inconsistent dates,Java Fullstack,,2023-01-27,2022-10-24,POEI"
+            "inconsistent dates,Java Fullstack,2023-01-27,2022-10-24,POEI"
     })
     void save_KO_dataIntegrityException_CSV(
             String integrityErrorExpected,
