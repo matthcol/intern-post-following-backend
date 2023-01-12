@@ -40,7 +40,7 @@ public class Trainee {
 
     // @Transient // do not persist this attribute
     @ManyToOne
-        //(fetch = FetchType.LAZY)  // on demand (default Eager i.e. always)
-    // @JoinColumn(name = "id_poe") // customize Foreign Key column
+        //(fetch = FetchType.LAZY)  // load on demand (default Eager i.e. always)
+        // @JoinColumn(name = "id_poe") // customize Foreign Key column
     private Poe poe;
 }

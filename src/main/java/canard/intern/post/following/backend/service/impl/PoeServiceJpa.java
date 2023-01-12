@@ -99,9 +99,14 @@ public class PoeServiceJpa implements PoeService {
         try {
             return poeRepository.findById(id)
                     .map(pe -> {
-                        // delete in DB if found
+                        // if found
+                        // 1. set poe to null for each trainee of this poe
+                        traineeRepository.findByPoeId(pe.getId())
+                                .forEach(te -> te.setPoe(null));
+                        // 2. delete poe
                         poeRepository.delete(pe);
-                        poeRepository.flush(); // force SQL delete here
+                        // 3. sync with DB (UPDATE trainee, DELETE poe)
+                        poeRepository.flush();
                         return true;
                     })
                     .orElse(false);
