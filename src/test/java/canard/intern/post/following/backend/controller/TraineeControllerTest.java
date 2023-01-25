@@ -394,15 +394,13 @@ class TraineeControllerTest {
         var traineeJson =  TraineeJsonProvider.traineeJsonAllFieldsValid();
 
         // call
-        var ex = assertThrows(NestedServletException.class, () ->
-            mockMvc.perform(post(BASE_URL)
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(traineeJson)
-                    )
-        );
-
-        assertEquals(UpdateException.class, ex.getCause().getClass());
+        mockMvc.perform(post(BASE_URL)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(traineeJson)
+                )
+                .andDo(print())
+                .andExpect(status().isIAmATeapot());
 
         // check mock service has been called
         then(traineeService)
