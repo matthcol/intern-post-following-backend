@@ -191,7 +191,7 @@ class TraineeControllerTest {
                 .email("james.bond@007.org")
                 .build();
         given(traineeService.getById(id))
-                        .willReturn(Optional.of(traineeDto));
+                .willReturn(Optional.of(traineeDto));
 
         // call controller with mock http client
         mockMvc.perform(get(URL_TEMPLATE_ID,  id)
@@ -403,10 +403,11 @@ class TraineeControllerTest {
 
         // call
         mockMvc.perform(post(BASE_URL)
-                .with(csrf())
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(traineeJson))
+                        .with(csrf())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(traineeJson)
+                )
                 .andDo(print())
                 .andExpect(status().isIAmATeapot());
 
@@ -460,7 +461,7 @@ class TraineeControllerTest {
                 .andExpect(jsonPath("$.email").value(email))
                 .andExpect(jsonPath("$.gender").value(gender.toString()));
 
-       then(traineeService)
+        then(traineeService)
                 .should()
                 .update(eq(id), any());
     }
