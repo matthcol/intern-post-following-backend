@@ -23,7 +23,7 @@ public class BasicAuthenticationConfig {
                 // CSRF
                 .and()
                 .csrf()
-                .disable() // for dev only
+                .disable() // for dev only or stateless api
                 // authorizations
                 .authorizeRequests()
                 .antMatchers("/login", "/public/**").permitAll()
